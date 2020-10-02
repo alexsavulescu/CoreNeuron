@@ -733,12 +733,7 @@ void nrn_cleanup() {
             NetSendBuffer_t* nsb = ml->_net_send_buffer;
             if (nsb) {
                 if (nsb->_size) {
-                    free_memory(nsb->_sendtype);
-                    free_memory(nsb->_vdata_index);
-                    free_memory(nsb->_pnt_index);
-                    free_memory(nsb->_weight_index);
-                    free_memory(nsb->_nsb_t);
-                    free_memory(nsb->_nsb_flag);
+                    free(nsb);
                 }
                 free_memory(nsb);
             }
