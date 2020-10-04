@@ -95,12 +95,12 @@ struct NetSendBuffer_t {
     }
 
     ~NetSendBuffer_t() {
-        free(_sendtype);
-        free(_vdata_index);
-        free(_pnt_index);
-        free(_weight_index);
-        free(_nsb_t);
-        free(_nsb_flag);
+        free_memory(_sendtype);
+        free_memory(_vdata_index);
+        free_memory(_pnt_index);
+        free_memory(_weight_index);
+        free_memory(_nsb_t);
+        free_memory(_nsb_flag);
     }
 
     void grow() {

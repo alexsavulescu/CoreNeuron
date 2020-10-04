@@ -732,10 +732,7 @@ void nrn_cleanup() {
 
             NetSendBuffer_t* nsb = ml->_net_send_buffer;
             if (nsb) {
-                if (nsb->_size) {
-                    free(nsb);
-                }
-                free_memory(nsb);
+                delete nsb;
             }
 
             if (tml->dependencies)

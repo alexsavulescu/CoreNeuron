@@ -465,7 +465,6 @@ void Phase2::set_net_send_buffer(Memb_list** ml_list, const std::vector<int>& pn
         Memb_list* ml = ml_list[type];
         if (ml) {  // needs a NetSendBuffer
             // begin with a size equal to twice number of instances
-            // at present there is no provision for dynamically increasing this.
             NetSendBuffer_t* nsb = new NetSendBuffer_t(ml->nodecount * 2);
             ml->_net_send_buffer = nsb;
         }
