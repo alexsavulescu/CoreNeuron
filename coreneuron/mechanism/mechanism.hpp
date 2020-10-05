@@ -69,7 +69,7 @@ struct NetReceiveBuffer_t {
     int _pnt_offset;
 };
 
-struct NetSendBuffer_t {
+struct NetSendBuffer_t : MemoryManaged {
     int* _sendtype;  // net_send, net_event, net_move
     int* _vdata_index;
     int* _pnt_index;
