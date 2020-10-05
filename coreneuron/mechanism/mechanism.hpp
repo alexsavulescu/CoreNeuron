@@ -104,6 +104,10 @@ struct NetSendBuffer_t : MemoryManaged {
     }
 
     void grow() {
+#if defined(_OPENACC)
+        int cannot_reallocate_on_device = 0;
+        assert(cannot_reallocate_on_device);
+#else
         int new_size = _size * 2;
         grow_buf(&_sendtype, _size, new_size);
         grow_buf(&_vdata_index, _size, new_size);
@@ -111,6 +115,8 @@ struct NetSendBuffer_t : MemoryManaged {
         grow_buf(&_weight_index, _size, new_size);
         grow_buf(&_nsb_t, _size, new_size);
         grow_buf(&_nsb_flag, _size, new_size);
+        _size = new_size;
+#endif
     }
 
     private:
