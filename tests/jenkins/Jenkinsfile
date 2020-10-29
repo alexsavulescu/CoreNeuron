@@ -109,6 +109,21 @@ pipeline {
             }
         }
 
+        stage('test_fornetcon'){
+            parallel{
+                stage('AoS'){
+                    steps{
+                        sh 'sh tests/jenkins/run_test_fornetcon.sh AoS'
+                    }
+                }
+                stage('SoA'){
+                    steps{
+                        sh 'sh tests/jenkins/run_test_fornetcon.sh SoA'
+                    }
+                }
+            }
+        }
+
         stage('checkout tests'){
             parallel{
                 stage('testcorenrn'){
