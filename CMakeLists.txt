@@ -4,6 +4,7 @@
 # See top-level LICENSE file for details.
 # =============================================================================
 
+
 cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 project(coreneuron VERSION 0.21.0)
 
