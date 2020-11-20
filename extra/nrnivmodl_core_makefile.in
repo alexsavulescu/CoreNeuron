@@ -96,7 +96,7 @@ mod_files_names = $(sort $(notdir $(wildcard $(MODS_PATH)/*.mod)))
 # Find out artificial and non-artificial cells for ISPC backend
 define check_file
 	# if ISPC is active then only separate mod files
-	ifeq (@CORENRN_ENABLE_ISPC@, ON)
+	ifdef USE_ISPC
 		ifeq ($(shell grep -q $(2) $(1); echo $$?), 0)
 			mod_art_files += $(MOD_TO_CPP_DIR)/$(notdir $(1))
 		else
@@ -112,7 +112,7 @@ $(foreach mod_file, $(mod_files_paths), $(eval $(call check_file, $(mod_file), A
 
 # With ispc, artificial cells get translated as regular CPP backend
 # Otherwise, all mod files are compiled as CPP backend
-ifeq (@CORENRN_ENABLE_ISPC@, ON)
+ifdef USE_ISPC
 	mod_files_for_cpp_backend = $(mod_art_files)
 else
 	mod_files_for_cpp_backend = $(mod_all_files)
@@ -147,7 +147,7 @@ C_GREEN := \033[32m
 # Default nmodl flags. Override if MOD2CPP_RUNTIME_FLAGS is not empty
 NMODL_FLAGS_ISPC = $(if $(MOD2CPP_RUNTIME_FLAGS),$(MOD2CPP_RUNTIME_FLAGS),@nmodl_arguments_ispc@)
 MOD2CPP_FLAGS_C = $(if $(MOD2CPP_RUNTIME_FLAGS),$(MOD2CPP_RUNTIME_FLAGS),@nmodl_arguments_c@)
-ifeq (@CORENRN_ENABLE_ISPC@, ON)
+ifdef USE_ISPC
     $(info Default nmodl flags: @nmodl_arguments_ispc@)
 else
     $(info Default nmodl flags: @nmodl_arguments_c@)

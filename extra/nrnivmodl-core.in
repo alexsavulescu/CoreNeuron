@@ -26,7 +26,7 @@ params_MODS_PATH="."
 params_BUILD_TYPE="@COMPILE_LIBRARY_TYPE@"
 
 # prefix for common options : make sure to rename these if options are changed.
-MAKE_OPTIONS="MECHLIB_SUFFIX MOD2CPP_BINARY MOD2CPP_RUNTIME_FLAGS DEST_DIR INCFLAGS LINKFLAGS MODS_PATH VERBOSE BUILD_TYPE"
+MAKE_OPTIONS="MECHLIB_SUFFIX MOD2CPP_BINARY MOD2CPP_RUNTIME_FLAGS DEST_DIR INCFLAGS LINKFLAGS MODS_PATH VERBOSE BUILD_TYPE USE_ISPC"
 
 # parse CLI args
 while getopts "n:m:a:d:i:l:V:p:b:h" OPT; do
@@ -58,6 +58,9 @@ while getopts "n:m:a:d:i:l:V:p:b:h" OPT; do
     b)
         # make with verbose
         params_BUILD_TYPE="$OPTARG";;
+    j)
+        # use ISPC (only for nmodl)
+        params_USE_ISPC=1;;
     h)
         echo "$APP_NAME [options, ...] [mods_path]"
         echo "Options:"
@@ -70,6 +73,7 @@ while getopts "n:m:a:d:i:l:V:p:b:h" OPT; do
         echo "  -V                        Verbose: show commands executed by make"
         echo "  -p <n_procs>              Number of parallel builds (Default: $PARALLEL_BUILDS)"
         echo "  -b <STATIC|SHARED>        libcorenrnmech library type"
+        echo "  -j                        Compile mod file with ISPC (only for NMODL)"
         exit 0;;
     ?)
         exit 1;;
