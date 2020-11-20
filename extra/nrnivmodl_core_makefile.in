@@ -92,7 +92,6 @@ endif
 # MOD files with full path, without path and names without .mod extension
 mod_files_paths = $(sort $(wildcard $(MODS_PATH)/*.mod))
 mod_files_names = $(sort $(notdir $(wildcard $(MODS_PATH)/*.mod)))
-mod_files_no_ext = $(mod_files_names:.mod=)
 
 # Find out artificial and non-artificial cells for ISPC backend
 define check_file
@@ -119,22 +118,26 @@ else
 	mod_files_for_cpp_backend = $(mod_all_files)
 endif
 
-# CPP files and their obkects
-mod_cpp_files = $(patsubst %.mod,%.cpp,$(mod_files_for_cpp_backend))
-mod_cpp_objs = $(addprefix $(MOD_OBJS_DIR)/,$(addsuffix .o,$(basename $(mod_files_no_ext))))
+# CPP files and their objects
+# This is the list of cpp files compile by this make script
+# but in case of ispc, others cpp files will be produced by nmodl itself
+mod_cpp_files = $(mod_files_for_cpp_backend:.mod=.cpp)
+# It's why we take all of them here
+mod_cpp_objs = $(addprefix $(MOD_OBJS_DIR)/,$(mod_files_name:.mod=.o))
 
 # For ISPC backend, we use all non-artificial cells
 mod_ispc_srcs_names = $(notdir $(mod_non_art_files))
-mod_ispc_files = $(patsubst %.mod,%.ispc,$(mod_non_art_files))
-mod_ispc_cpp_files = $(patsubst %.mod,%.cpp,$(mod_non_art_files))
-mod_ispc_objs = $(addprefix $(MOD_OBJS_DIR)/,$(addsuffix .obj,$(basename $(mod_ispc_srcs_names))))
+mod_ispc_files = $(mod_non_art_files:.mod=.ispc)
+mod_ispc_cpp_files = $(mod_non_art_files:.mod=.cpp)
+mod_ispc_objs = $(addprefix $(MOD_OBJS_DIR)/,$(mod_ispc_srcs_names:.mod=.obj))
 
-# We use $ORIGIN (@loader_path in OSX)
+# We use $ORIGIN (@loader_path in OSX) for rpath
 ORIGIN_RPATH := $(if $(filter Darwin,$(OS_NAME)),@loader_path,$$ORIGIN)
 SONAME_OPTION := -Wl,$(if $(filter Darwin,$(OS_NAME)),-install_name${COMMA_OP}@rpath/,-soname${COMMA_OP})$(notdir ${COREMECH_LIB_PATH})
 LIB_RPATH = $(if $(DEST_DIR),$(DEST_DIR)/lib,$(ORIGIN_RPATH))
 
 # All objects used during build
+# Be carefull that for ispc a module can be included two times here mod_file.o and mod_file.obj
 ALL_OBJS = $(MOD_FUNC_OBJ) $(DIMPLIC_OBJ) $(mod_cpp_objs) $(mod_ispc_objs)
 
 # Colors for pretty printing
@@ -149,7 +152,7 @@ ifeq (@CORENRN_ENABLE_ISPC@, ON)
 else
     $(info Default nmodl flags: @nmodl_arguments_c@)
 endif
-ifneq ($(MOD2CPP_RUNTIME_FLAGS),)
+ifdef MOD2CPP_RUNTIME_FLAGS
     $(warning Runtime nmodl flags (they replace the default ones): $(MOD2CPP_RUNTIME_FLAGS))
 endif
 
