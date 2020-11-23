@@ -57,6 +57,11 @@ while getopts "n:m:a:d:i:l:V:p:b:jh" OPT; do
         PARALLEL_BUILDS="$OPTARG";;
     b)
         # make with verbose
+        if [ ! "$OPTARG" == "STATIC" ] && [ ! "$OPTARG" == "SHARED" ];
+        then
+            echo "-b ${OPTARG}: argument can only be SHARED or STATIC";
+            exit 1
+        fi
         params_BUILD_TYPE="$OPTARG";;
     j)
         # use ISPC (only for nmodl)
