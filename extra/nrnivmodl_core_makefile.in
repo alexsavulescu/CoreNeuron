@@ -123,7 +123,7 @@ endif
 # but in case of ispc, others cpp files will be produced by nmodl itself
 mod_cpp_files = $(mod_files_for_cpp_backend:.mod=.cpp)
 # It's why we take all of them here
-mod_cpp_objs = $(addprefix $(MOD_OBJS_DIR)/,$(mod_files_name:.mod=.o))
+mod_cpp_objs = $(addprefix $(MOD_OBJS_DIR)/,$(mod_files_names:.mod=.o))
 
 # For ISPC backend, we use all non-artificial cells
 mod_ispc_srcs_names = $(notdir $(mod_non_art_files))
