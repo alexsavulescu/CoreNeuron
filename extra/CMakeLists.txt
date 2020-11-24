@@ -55,10 +55,6 @@ else()
   set(nmodl_arguments_ispc "")
 endif()
 
-# name of nmodl/mod2c binary
-get_filename_component(nmodl_name ${CORENRN_MOD2CPP_BINARY} NAME)
-set(nmodl_binary_name ${nmodl_name})
-
 # =============================================================================
 # Install first into build directory and then to install prefix
 # =============================================================================

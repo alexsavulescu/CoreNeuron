@@ -34,6 +34,23 @@ MOD_TO_CPP_DIR = $(OUTPUT_DIR)/corenrn/mod2c
 # Directory where cpp files are compiled
 MOD_OBJS_DIR = $(OUTPUT_DIR)/corenrn/build
 
+NMODL_BINARY = @CORENRN_NMODL_BINARY@
+
+MOD2C_BINARY = @CORENRN_MOD2C_BINARY@
+
+ifeq ($(MOD2CPP_BACKEND_NAME), nmodl)
+    ifeq (@nmodl_FOUND@, TRUE)
+        MOD2CPP_DEFAULT_BINARY = $(NMODL_BINARY)
+        INCLUDES += -I@CORENRN_MOD2CPP_INCLUDE@
+        ISPC_COMPILE_CMD += -I@CORENRN_MOD2CPP_INCLUDE@
+    else
+        MOD2CPP_DEFAULT_BINARY = $(addprefix $(CORENRN_BIN_DIR)/,$(notdir NMODL_BINARY)))
+    endif
+else
+    MOD2CPP_DEFAULT_BINARY = $(addprefix $(CORENRN_BIN_DIR)/,$(notdir MOD2CPP_BINARY))
+endif
+MOD2CPP_BINARY_PATH = $(if $(MOD2CPP_BINARY), $(MOD2CPP_BINARY), $(MOD2CPP_DEFAULT_BINARY))
+
 # Linked libraries gathered by CMake
 LDFLAGS = $(LINKFLAGS) @CORENRN_LINK_DEFS@
 CORENRNLIB_FLAGS = -L$(CORENRN_LIB_DIR) -lcoreneuron
@@ -78,15 +95,6 @@ ifeq ($(TARGET_LIB_TYPE), STATIC)
 else
     LIB_SUFFIX = @CMAKE_SHARED_LIBRARY_SUFFIX@
     corenrnmech_lib_target = coremech_lib_shared
-endif
-
-# Binary of MOD2C/NMODL depending on CMake option activated
-ifeq (@nmodl_FOUND@, TRUE)
-    MOD2CPP_BINARY_PATH = $(if $(MOD2CPP_BINARY),$(MOD2CPP_BINARY), @CORENRN_MOD2CPP_BINARY@)
-    INCLUDES += -I@CORENRN_MOD2CPP_INCLUDE@
-    ISPC_COMPILE_CMD += -I@CORENRN_MOD2CPP_INCLUDE@
-else
-    MOD2CPP_BINARY_PATH = $(if $(MOD2CPP_BINARY),$(MOD2CPP_BINARY), $(CORENRN_BIN_DIR)/@nmodl_binary_name@)
 endif
 
 # MOD files with full path, without path and names without .mod extension
@@ -157,7 +165,6 @@ ifdef MOD2CPP_RUNTIME_FLAGS
 endif
 
 # ======== MAIN BUILD RULES ============
-
 
 # main target to build binary
 $(SPECIAL_EXE): coremech_lib_target

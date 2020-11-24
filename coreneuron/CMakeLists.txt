@@ -168,7 +168,8 @@ set_target_properties(
 add_custom_target(
   nrniv-core ALL
   COMMAND ${CMAKE_BINARY_DIR}/bin/nrnivmodl-core -b STATIC
-          -m ${CORENRN_MOD2CPP_BINARY}
+          -m $<IF:$<BOOL:${CORENRN_ENABLE_NMODL}>,${CORENRN_NMODL_BINARY},${CORENRN_MOD2C_BINARY}>
+          -t $<IF:$<BOOL:${CORENRN_ENABLE_NMODL}>,nmodl,mod2c>
           $<$<BOOL:${CORENRN_ENABLE_ISPC}>:-j>
           ${CORENEURON_PROJECT_SOURCE_DIR}/tests/integration/ring_gap/mod
   WORKING_DIRECTORY
@@ -248,7 +249,11 @@ install(FILES ${KINDERIV_PYTHON_SCRIPT} ${MODFUNC_PERL_SCRIPT} ${DIMPLIC_CODE_FI
               ${ENGINEMECH_CODE_FILE} DESTINATION share/coreneuron)
 
 # copy mod2c/nmodl for nrnivmodl-core
-install(PROGRAMS ${CORENRN_MOD2CPP_BINARY} DESTINATION bin)
+if(CORENRN_ENABLE_NMODL)
+    install(PROGRAMS ${CORENRN_NMODL_BINARY} DESTINATION bin)
+else()
+    install(PROGRAMS ${CORENRN_MOD2C_BINARY} DESTINATION bin)
+endif()
 
 if(NOT CORENRN_ENABLE_NMODL)
   install(FILES ${NMODL_UNITS_FILE} DESTINATION share/mod2c)
