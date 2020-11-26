@@ -279,9 +279,6 @@ if(CORENRN_ENABLE_NMODL)
   set(CORENRN_NMODL_FLAGS
       ""
       CACHE STRING "Extra NMODL options such as passes")
-  if(CORENRN_ENABLE_GPU)
-    string(APPEND CORENRN_NMODL_FLAGS " acc --oacc")
-  endif()
   separate_arguments(NMODL_EXTRA_FLAGS_LIST UNIX_COMMAND "${CORENRN_NMODL_FLAGS}")
 else()
   include(AddMod2cSubmodule)

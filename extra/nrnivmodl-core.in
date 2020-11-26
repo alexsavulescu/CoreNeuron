@@ -32,10 +32,10 @@ else
 fi
 
 # prefix for common options : make sure to rename these if options are changed.
-MAKE_OPTIONS="MECHLIB_SUFFIX MOD2CPP_BINARY MOD2CPP_RUNTIME_FLAGS DEST_DIR INCFLAGS LINKFLAGS MODS_PATH VERBOSE BUILD_TYPE USE_ISPC MOD2CPP_BACKEND_NAME"
+MAKE_OPTIONS="MECHLIB_SUFFIX MOD2CPP_BINARY MOD2CPP_RUNTIME_FLAGS DEST_DIR INCFLAGS LINKFLAGS MODS_PATH VERBOSE BUILD_TYPE USE_ISPC USE_GPU MOD2CPP_BACKEND_NAME"
 
 # parse CLI args
-while getopts "n:m:a:d:i:l:Vp:b:jt:h" OPT; do
+while getopts "n:m:a:d:i:l:Vp:b:jt:hg" OPT; do
     case "$OPT" in
     n)
         # suffix for mechanism library
@@ -72,6 +72,9 @@ while getopts "n:m:a:d:i:l:Vp:b:jt:h" OPT; do
     j)
         # use ISPC (only for nmodl)
         params_USE_ISPC=1;;
+    g)
+        # use GPU
+        params_USE_GPU=1;;
     t)
         # Choose between nmodl or mod2c which backend use
         if [ "@CORENRN_ENABLE_NMODL@" == "ON" ];

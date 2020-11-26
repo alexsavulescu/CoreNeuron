@@ -46,9 +46,17 @@ ifeq ($(MOD2CPP_BACKEND_NAME), nmodl)
     else
         MOD2CPP_DEFAULT_BINARY = $(addprefix $(CORENRN_BIN_DIR)/,$(notdir NMODL_BINARY)))
     endif
+
+    ifdef USE_GPU
+        MOD2CPP_ARGUMENTS_C = "acc --oacc"
+        MOD2CPP_ARGUMENTS_ISPC = "acc --oacc"
+    endif
 else
     MOD2CPP_DEFAULT_BINARY = $(addprefix $(CORENRN_BIN_DIR)/,$(notdir MOD2CPP_BINARY))
 endif
+MOD2CPP_ARGUMENTS_C += @nmodl_arguments_c@
+MOD2CPP_ARGUMENTS_ISPC += @nmodl_arguments_ispc@
+
 MOD2CPP_BINARY_PATH = $(if $(MOD2CPP_BINARY), $(MOD2CPP_BINARY), $(MOD2CPP_DEFAULT_BINARY))
 
 # Linked libraries gathered by CMake
@@ -153,12 +161,12 @@ C_RESET := \033[0m
 C_GREEN := \033[32m
 
 # Default nmodl flags. Override if MOD2CPP_RUNTIME_FLAGS is not empty
-NMODL_FLAGS_ISPC = $(if $(MOD2CPP_RUNTIME_FLAGS),$(MOD2CPP_RUNTIME_FLAGS),@nmodl_arguments_ispc@)
-MOD2CPP_FLAGS_C = $(if $(MOD2CPP_RUNTIME_FLAGS),$(MOD2CPP_RUNTIME_FLAGS),@nmodl_arguments_c@)
+NMODL_FLAGS_ISPC = $(if $(MOD2CPP_RUNTIME_FLAGS),$(MOD2CPP_RUNTIME_FLAGS),$(MOD2CPP_ARGUMENTS_ISPC))
+MOD2CPP_FLAGS_C = $(if $(MOD2CPP_RUNTIME_FLAGS),$(MOD2CPP_RUNTIME_FLAGS),$(MOD2CPP_ARGUMENTS_C))
 ifdef USE_ISPC
-    $(info Default nmodl flags: @nmodl_arguments_ispc@)
+    $(info Default nmodl flags: $(MOD2CPP_ARGUMENTS_ISPC))
 else
-    $(info Default nmodl flags: @nmodl_arguments_c@)
+    $(info Default nmodl flags: $(MOD2CPP_ARGUMENTS_C))
 endif
 ifdef MOD2CPP_RUNTIME_FLAGS
     $(warning Runtime nmodl flags (they replace the default ones): $(MOD2CPP_RUNTIME_FLAGS))
